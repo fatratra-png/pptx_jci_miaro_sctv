@@ -1,0 +1,1905 @@
+<!doctype html>
+<html lang="fr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Projet MIARO 2026 — JCI Antananarivo × STCV</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;600;700;900&family=Playfair+Display:wght@700;900&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      :root {
+        --jci-blue: #003f87;
+        --jci-sky: #009fe3;
+        --jci-teal: #00c4b3;
+        --jci-dark: #0a1628;
+        --jci-gold: #f5a623;
+        /* STCV brand */
+        --stcv-green: #5bbd2d;
+        --stcv-lime: #8bc34a;
+        --stcv-dark-green: #2e7d32;
+        --stcv-black: #1a1a1a;
+        --white: #ffffff;
+      }
+
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        font-family: "Montserrat", sans-serif;
+        background: var(--jci-dark);
+        color: var(--white);
+        overflow: hidden;
+        height: 100vh;
+        width: 100vw;
+      }
+
+      /* ============ BACKGROUND ============ */
+      .bg-mesh {
+        position: fixed;
+        inset: 0;
+        z-index: 0;
+        background: var(--jci-dark);
+        overflow: hidden;
+      }
+      .bg-mesh::before {
+        content: "";
+        position: absolute;
+        width: 900px;
+        height: 900px;
+        background: radial-gradient(
+          circle,
+          rgba(91, 189, 45, 0.1) 0%,
+          transparent 65%
+        );
+        top: -200px;
+        right: -200px;
+        animation: pulse-glow 7s ease-in-out infinite;
+      }
+      .bg-mesh::after {
+        content: "";
+        position: absolute;
+        width: 600px;
+        height: 600px;
+        background: radial-gradient(
+          circle,
+          rgba(0, 159, 227, 0.08) 0%,
+          transparent 65%
+        );
+        bottom: -100px;
+        left: -100px;
+        animation: pulse-glow 9s ease-in-out infinite reverse;
+      }
+      @keyframes pulse-glow {
+        0%,
+        100% {
+          transform: scale(1);
+          opacity: 1;
+        }
+        50% {
+          transform: scale(1.2);
+          opacity: 0.6;
+        }
+      }
+
+      /* Hexagonal grid pattern — STCV industrial feel */
+      .hex-bg {
+        position: fixed;
+        inset: 0;
+        z-index: 0;
+        pointer-events: none;
+        opacity: 0.04;
+        background-image:
+          repeating-linear-gradient(
+            60deg,
+            var(--stcv-green) 0,
+            var(--stcv-green) 1px,
+            transparent 0,
+            transparent 50%
+          ),
+          repeating-linear-gradient(
+            120deg,
+            var(--stcv-green) 0,
+            var(--stcv-green) 1px,
+            transparent 0,
+            transparent 50%
+          ),
+          repeating-linear-gradient(
+            180deg,
+            var(--stcv-green) 0,
+            var(--stcv-green) 1px,
+            transparent 0,
+            transparent 50%
+          );
+        background-size: 40px 70px;
+      }
+
+      .rings {
+        position: fixed;
+        inset: 0;
+        z-index: 0;
+        pointer-events: none;
+      }
+      .ring {
+        position: absolute;
+        border-radius: 50%;
+        border: 1px solid rgba(91, 189, 45, 0.07);
+      }
+      .ring:nth-child(1) {
+        width: 350px;
+        height: 350px;
+        top: -120px;
+        right: 3%;
+        animation: spin 35s linear infinite;
+      }
+      .ring:nth-child(2) {
+        width: 550px;
+        height: 550px;
+        top: -220px;
+        right: -60px;
+        animation: spin 50s linear infinite reverse;
+        border-color: rgba(0, 159, 227, 0.05);
+      }
+      .ring:nth-child(3) {
+        width: 750px;
+        height: 750px;
+        top: -320px;
+        right: -170px;
+        animation: spin 70s linear infinite;
+        border-color: rgba(91, 189, 45, 0.04);
+      }
+      .ring:nth-child(4) {
+        width: 200px;
+        height: 200px;
+        bottom: 8%;
+        left: 1%;
+        animation: spin 25s linear infinite;
+        border-color: rgba(0, 196, 179, 0.08);
+      }
+      @keyframes spin {
+        from {
+          transform: rotate(0deg);
+        }
+        to {
+          transform: rotate(360deg);
+        }
+      }
+
+      .particles {
+        position: fixed;
+        inset: 0;
+        z-index: 0;
+        pointer-events: none;
+      }
+      .particle {
+        position: absolute;
+        border-radius: 50%;
+        opacity: 0;
+        animation: float-up 8s ease-in infinite;
+      }
+      @keyframes float-up {
+        0% {
+          opacity: 0;
+          transform: translateY(100vh) scale(0);
+        }
+        10% {
+          opacity: 0.5;
+        }
+        90% {
+          opacity: 0.15;
+        }
+        100% {
+          opacity: 0;
+          transform: translateY(-20vh) scale(1.5);
+        }
+      }
+
+      /* ============ SLIDES ============ */
+      .slideshow {
+        position: relative;
+        z-index: 10;
+        width: 100vw;
+        height: 100vh;
+        overflow: hidden;
+      }
+
+      .slide {
+        position: absolute;
+        inset: 0;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        padding: 80px 80px 70px;
+        opacity: 0;
+        transform: translateX(100%) scale(0.95);
+        transition: all 0.7s cubic-bezier(0.77, 0, 0.175, 1);
+        pointer-events: none;
+      }
+      .slide.active {
+        opacity: 1;
+        transform: translateX(0) scale(1);
+        pointer-events: all;
+      }
+      .slide.exit-left {
+        opacity: 0;
+        transform: translateX(-100%) scale(0.95);
+      }
+
+      /* ============ SLIDE 1 — COVER ============ */
+      .slide-cover {
+        text-align: center;
+      }
+
+      .cover-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 10px;
+        padding: 8px 22px;
+        border: 1px solid rgba(91, 189, 45, 0.4);
+        border-radius: 100px;
+        font-size: 11px;
+        letter-spacing: 3px;
+        text-transform: uppercase;
+        color: var(--stcv-green);
+        margin-bottom: 40px;
+        background: rgba(91, 189, 45, 0.06);
+        animation: fade-in-up 0.8s ease both;
+      }
+      .cover-badge span {
+        width: 6px;
+        height: 6px;
+        background: var(--stcv-green);
+        border-radius: 50%;
+        animation: blink 1.5s ease infinite;
+      }
+      @keyframes blink {
+        0%,
+        100% {
+          opacity: 1;
+        }
+        50% {
+          opacity: 0.2;
+        }
+      }
+
+      .cover-logos {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 40px;
+        margin-bottom: 50px;
+        animation: fade-in-up 0.8s ease 0.2s both;
+      }
+      .logo-jci {
+        width: 180px;
+        height: 180px;
+        object-fit: contain;
+        filter: drop-shadow(0 0 20px rgba(0, 159, 227, 0.5));
+      }
+
+      .logo-divider {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 6px;
+      }
+      .logo-divider span {
+        width: 1px;
+        height: 35px;
+        background: linear-gradient(
+          to bottom,
+          transparent,
+          rgba(255, 255, 255, 0.3),
+          transparent
+        );
+      }
+      .logo-divider em {
+        font-style: normal;
+        font-size: 22px;
+        color: rgba(255, 255, 255, 0.4);
+      }
+
+      .logo-stcv {
+        width: 180px;
+        height: 180px;
+        border-radius: 24px;
+        background: transparent;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        overflow: hidden;
+        filter: drop-shadow(0 0 20px rgba(91, 189, 45, 0.4));
+      }
+      .logo-stcv img {
+        width: 100%;
+        height: 100%;
+        object-fit: contain;
+      }
+
+      .cover-title {
+        font-family: "Playfair Display", serif;
+        font-size: clamp(52px, 7vw, 96px);
+        font-weight: 900;
+        line-height: 1;
+        background: linear-gradient(
+          135deg,
+          #fff 0%,
+          var(--stcv-green) 50%,
+          var(--jci-sky) 100%
+        );
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+        margin-bottom: 16px;
+        animation: fade-in-up 0.8s ease 0.4s both;
+      }
+      .cover-subtitle {
+        font-size: 15px;
+        color: rgba(255, 255, 255, 0.55);
+        letter-spacing: 4px;
+        text-transform: uppercase;
+        font-weight: 300;
+        margin-bottom: 46px;
+        animation: fade-in-up 0.8s ease 0.6s both;
+      }
+      .cover-pill {
+        display: inline-flex;
+        align-items: center;
+        gap: 10px;
+        padding: 14px 36px;
+        background: linear-gradient(
+          135deg,
+          var(--stcv-dark-green),
+          var(--stcv-green)
+        );
+        border-radius: 100px;
+        font-size: 13px;
+        font-weight: 700;
+        letter-spacing: 2px;
+        text-transform: uppercase;
+        animation: fade-in-up 0.8s ease 0.8s both;
+        box-shadow: 0 10px 40px rgba(91, 189, 45, 0.3);
+      }
+
+      @keyframes fade-in-up {
+        from {
+          opacity: 0;
+          transform: translateY(30px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      /* ============ SLIDE STRUCTURE ============ */
+      .slide-header {
+        width: 100%;
+        display: flex;
+        align-items: flex-start;
+        gap: 20px;
+        margin-bottom: 40px;
+      }
+      .slide-num {
+        font-size: 80px;
+        font-weight: 900;
+        line-height: 1;
+        background: linear-gradient(135deg, var(--stcv-green), var(--jci-sky));
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+        opacity: 0.25;
+        font-family: "Playfair Display", serif;
+        flex-shrink: 0;
+      }
+      .slide-title-wrap {
+        flex: 1;
+      }
+      .slide-tag {
+        display: inline-block;
+        padding: 4px 14px;
+        border: 1px solid var(--stcv-green);
+        border-radius: 100px;
+        font-size: 10px;
+        letter-spacing: 3px;
+        text-transform: uppercase;
+        color: var(--stcv-green);
+        margin-bottom: 10px;
+      }
+      .slide-title {
+        font-family: "Playfair Display", serif;
+        font-size: clamp(28px, 3.5vw, 48px);
+        font-weight: 700;
+        line-height: 1.1;
+      }
+      .slide-title em {
+        font-style: normal;
+        background: linear-gradient(135deg, var(--stcv-green), var(--jci-sky));
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+      }
+      .slide-divider {
+        width: 60px;
+        height: 3px;
+        background: linear-gradient(
+          to right,
+          var(--stcv-green),
+          var(--jci-sky)
+        );
+        margin-top: 14px;
+        border-radius: 2px;
+      }
+
+      /* ============ CARDS ============ */
+      .cards-grid {
+        display: grid;
+        gap: 18px;
+        width: 100%;
+      }
+      .cards-grid.cols-2 {
+        grid-template-columns: 1fr 1fr;
+      }
+      .cards-grid.cols-3 {
+        grid-template-columns: 1fr 1fr 1fr;
+      }
+      .cards-grid.cols-4 {
+        grid-template-columns: repeat(4, 1fr);
+      }
+
+      .card {
+        background: rgba(255, 255, 255, 0.03);
+        border: 1px solid rgba(255, 255, 255, 0.08);
+        border-radius: 16px;
+        padding: 26px;
+        position: relative;
+        overflow: hidden;
+        transition: all 0.3s ease;
+      }
+      .card:hover {
+        background: rgba(91, 189, 45, 0.07);
+        border-color: rgba(91, 189, 45, 0.3);
+        transform: translateY(-4px);
+        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+      }
+      .card::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 2px;
+        background: linear-gradient(
+          to right,
+          var(--stcv-dark-green),
+          var(--stcv-green),
+          var(--jci-sky)
+        );
+        opacity: 0;
+        transition: opacity 0.3s;
+      }
+      .card:hover::before {
+        opacity: 1;
+      }
+
+      .card-icon {
+        width: 44px;
+        height: 44px;
+        border-radius: 12px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 22px;
+        margin-bottom: 14px;
+        background: linear-gradient(
+          135deg,
+          rgba(46, 125, 50, 0.4),
+          rgba(91, 189, 45, 0.2)
+        );
+      }
+      .card h3 {
+        font-size: 15px;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 1.5px;
+        color: var(--stcv-green);
+        margin-bottom: 10px;
+      }
+      .card p,
+      .card li {
+        font-size: 14px;
+        color: rgba(255, 255, 255, 0.7);
+        line-height: 1.7;
+      }
+      .card ul {
+        list-style: none;
+      }
+      .card li::before {
+        content: "→ ";
+        color: var(--stcv-green);
+        font-weight: 700;
+      }
+
+      .card-green {
+        background: linear-gradient(
+          135deg,
+          rgba(46, 125, 50, 0.3),
+          rgba(91, 189, 45, 0.1)
+        );
+        border-color: rgba(91, 189, 45, 0.25);
+      }
+      .card-blue {
+        background: linear-gradient(
+          135deg,
+          rgba(0, 63, 135, 0.35),
+          rgba(0, 159, 227, 0.12)
+        );
+        border-color: rgba(0, 159, 227, 0.2);
+      }
+      .card-gold {
+        background: linear-gradient(
+          135deg,
+          rgba(245, 166, 35, 0.1),
+          rgba(245, 166, 35, 0.03)
+        );
+        border-color: rgba(245, 166, 35, 0.2);
+      }
+      .card-gold h3 {
+        color: var(--jci-gold);
+      }
+
+      /* ============ ÉTAPES ============ */
+      .steps-flow {
+        display: flex;
+        gap: 0;
+        width: 100%;
+        align-items: stretch;
+      }
+      .step-item {
+        flex: 1;
+        text-align: center;
+        position: relative;
+      }
+      .step-item:not(:last-child)::after {
+        content: "→";
+        position: absolute;
+        right: -14px;
+        top: 28px;
+        color: var(--stcv-green);
+        font-size: 20px;
+        z-index: 2;
+      }
+      .step-inner {
+        background: rgba(255, 255, 255, 0.03);
+        border: 1px solid rgba(255, 255, 255, 0.08);
+        border-radius: 12px;
+        padding: 20px 10px;
+        margin: 0 8px;
+        height: 100%;
+        transition: all 0.3s ease;
+      }
+      .step-inner:hover {
+        background: rgba(91, 189, 45, 0.1);
+        border-color: rgba(91, 189, 45, 0.4);
+        transform: translateY(-6px);
+      }
+      .step-inner.highlight {
+        border-color: rgba(91, 189, 45, 0.5);
+        background: rgba(91, 189, 45, 0.1);
+      }
+      .step-num {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        background: linear-gradient(
+          135deg,
+          var(--stcv-dark-green),
+          var(--stcv-green)
+        );
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: 900;
+        font-size: 16px;
+        margin: 0 auto 12px;
+        box-shadow: 0 4px 15px rgba(91, 189, 45, 0.3);
+      }
+      .step-label {
+        font-size: 12px;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 2px;
+        color: var(--stcv-green);
+        margin-bottom: 8px;
+      }
+      .step-desc {
+        font-size: 12px;
+        color: rgba(255, 255, 255, 0.6);
+        line-height: 1.5;
+      }
+      .step-time {
+        display: inline-block;
+        margin-top: 10px;
+        padding: 3px 10px;
+        background: rgba(91, 189, 45, 0.15);
+        border-radius: 100px;
+        font-size: 11px;
+        color: var(--stcv-green);
+        font-weight: 600;
+      }
+
+      /* ============ CALENDAR ============ */
+      .cal-item {
+        display: flex;
+        align-items: center;
+        gap: 20px;
+        padding: 18px 24px;
+        background: rgba(255, 255, 255, 0.03);
+        border: 1px solid rgba(255, 255, 255, 0.08);
+        border-radius: 14px;
+        transition: all 0.3s;
+      }
+      .cal-item:hover {
+        background: rgba(91, 189, 45, 0.07);
+        border-color: rgba(91, 189, 45, 0.3);
+        transform: translateX(6px);
+      }
+      .cal-item.featured {
+        border-color: rgba(91, 189, 45, 0.4);
+        background: rgba(91, 189, 45, 0.08);
+      }
+      .cal-date {
+        background: linear-gradient(
+          135deg,
+          var(--stcv-dark-green),
+          var(--stcv-green)
+        );
+        border-radius: 10px;
+        padding: 10px 16px;
+        text-align: center;
+        flex-shrink: 0;
+        min-width: 80px;
+      }
+      .cal-date .day {
+        font-size: 24px;
+        font-weight: 900;
+        line-height: 1;
+      }
+      .cal-date .month {
+        font-size: 10px;
+        letter-spacing: 2px;
+        text-transform: uppercase;
+        opacity: 0.85;
+      }
+      .cal-info {
+        flex: 1;
+      }
+      .cal-info strong {
+        display: block;
+        font-size: 15px;
+        font-weight: 700;
+        margin-bottom: 4px;
+      }
+      .cal-info span {
+        font-size: 13px;
+        color: rgba(255, 255, 255, 0.6);
+      }
+      .cal-badge {
+        padding: 6px 14px;
+        border-radius: 100px;
+        font-size: 11px;
+        font-weight: 700;
+        white-space: nowrap;
+      }
+      .cal-badge.stcv-main {
+        background: rgba(91, 189, 45, 0.2);
+        color: var(--stcv-green);
+        border: 1px solid rgba(91, 189, 45, 0.4);
+      }
+      .cal-badge.onu {
+        background: rgba(0, 196, 179, 0.15);
+        color: var(--jci-teal);
+        border: 1px solid rgba(0, 196, 179, 0.3);
+      }
+      .cal-badge.maeva {
+        background: rgba(0, 159, 227, 0.15);
+        color: var(--jci-sky);
+        border: 1px solid rgba(0, 159, 227, 0.2);
+      }
+
+      /* ============ BÉNÉFICES GRID ============ */
+      .benefit-row {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 16px;
+        width: 100%;
+      }
+      .benefit-col {
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+      }
+      .benefit-item {
+        display: flex;
+        align-items: flex-start;
+        gap: 14px;
+        padding: 14px 18px;
+        background: rgba(255, 255, 255, 0.03);
+        border: 1px solid rgba(255, 255, 255, 0.07);
+        border-radius: 12px;
+        transition: all 0.3s;
+      }
+      .benefit-item:hover {
+        background: rgba(91, 189, 45, 0.08);
+        border-color: rgba(91, 189, 45, 0.25);
+        transform: translateX(4px);
+      }
+      .benefit-icon {
+        font-size: 22px;
+        flex-shrink: 0;
+      }
+      .benefit-text strong {
+        display: block;
+        font-size: 13px;
+        font-weight: 700;
+        color: var(--white);
+        margin-bottom: 3px;
+      }
+      .benefit-text span {
+        font-size: 12px;
+        color: rgba(255, 255, 255, 0.55);
+      }
+
+      /* ============ ODD ============ */
+      .odd-grid {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+        width: 100%;
+      }
+      .odd-pill {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        padding: 12px 16px;
+        border-radius: 12px;
+        font-size: 13px;
+        font-weight: 600;
+        flex: 1;
+        min-width: 200px;
+      }
+      .odd-num {
+        width: 34px;
+        height: 34px;
+        border-radius: 8px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: 900;
+        font-size: 15px;
+        flex-shrink: 0;
+      }
+
+      /* ============ CTA ============ */
+      .cta-center {
+        text-align: center;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 28px;
+        width: 100%;
+      }
+      .cta-big {
+        font-family: "Playfair Display", serif;
+        font-size: clamp(38px, 5.5vw, 76px);
+        font-weight: 900;
+        background: linear-gradient(
+          135deg,
+          #fff,
+          var(--stcv-green),
+          var(--jci-sky)
+        );
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+        line-height: 1.1;
+        max-width: 820px;
+      }
+      .cta-steps {
+        display: flex;
+        gap: 18px;
+        flex-wrap: wrap;
+        justify-content: center;
+      }
+      .cta-step {
+        background: rgba(255, 255, 255, 0.04);
+        border: 1px solid rgba(91, 189, 45, 0.2);
+        border-radius: 16px;
+        padding: 20px 28px;
+        display: flex;
+        align-items: center;
+        gap: 16px;
+        min-width: 200px;
+        transition: all 0.3s;
+      }
+      .cta-step:hover {
+        background: rgba(91, 189, 45, 0.1);
+        transform: translateY(-4px);
+        box-shadow: 0 15px 30px rgba(0, 0, 0, 0.3);
+      }
+      .cta-step-num {
+        width: 36px;
+        height: 36px;
+        border-radius: 50%;
+        background: linear-gradient(
+          135deg,
+          var(--stcv-dark-green),
+          var(--stcv-green)
+        );
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: 900;
+        font-size: 15px;
+        flex-shrink: 0;
+      }
+      .cta-step-text {
+        font-size: 13px;
+        color: rgba(255, 255, 255, 0.8);
+        text-align: left;
+      }
+      .cta-step-text strong {
+        display: block;
+        font-size: 15px;
+        color: white;
+        margin-bottom: 2px;
+      }
+      .contact-box {
+        background: linear-gradient(
+          135deg,
+          rgba(46, 125, 50, 0.3),
+          rgba(91, 189, 45, 0.15)
+        );
+        border: 1px solid rgba(91, 189, 45, 0.3);
+        border-radius: 16px;
+        padding: 20px 40px;
+        font-size: 14px;
+        color: rgba(255, 255, 255, 0.8);
+        display: flex;
+        align-items: center;
+        gap: 20px;
+      }
+      .contact-box strong {
+        color: var(--white);
+      }
+      .contact-box a {
+        color: var(--stcv-green);
+        text-decoration: none;
+      }
+
+      /* ============ STAT BOXES ============ */
+      .stat-row {
+        display: flex;
+        gap: 14px;
+        width: 100%;
+      }
+      .stat-box {
+        flex: 1;
+        padding: 18px;
+        background: rgba(255, 255, 255, 0.03);
+        border: 1px solid rgba(255, 255, 255, 0.08);
+        border-radius: 14px;
+        text-align: center;
+      }
+      .stat-box .val {
+        font-size: 32px;
+        font-weight: 900;
+        background: linear-gradient(135deg, var(--stcv-green), var(--jci-sky));
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+      }
+      .stat-box .lbl {
+        font-size: 11px;
+        color: rgba(255, 255, 255, 0.45);
+        margin-top: 4px;
+      }
+
+      /* ============ PROGRESS BAR ============ */
+      .progress-bar {
+        position: fixed;
+        top: 0;
+        left: 0;
+        height: 3px;
+        background: linear-gradient(
+          to right,
+          var(--stcv-dark-green),
+          var(--stcv-green),
+          var(--jci-sky)
+        );
+        z-index: 200;
+        transition: width 0.6s cubic-bezier(0.77, 0, 0.175, 1);
+        box-shadow: 0 0 12px rgba(91, 189, 45, 0.6);
+      }
+
+      /* ============ TOP BAR ============ */
+      .top-bar {
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        z-index: 100;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 16px 56px;
+        background: linear-gradient(
+          to bottom,
+          rgba(10, 22, 40, 0.95),
+          transparent
+        );
+      }
+      .top-project-name {
+        font-size: 22px;
+        color: var(--stcv-green);
+        font-weight: 900;
+        letter-spacing: 6px;
+        text-transform: uppercase;
+      }
+      .top-slide-info {
+        font-size: 11px;
+        color: rgba(255, 255, 255, 0.35);
+        letter-spacing: 2px;
+        text-transform: uppercase;
+      }
+      .top-logo {
+        width: 90px;
+        height: 90px;
+        object-fit: contain;
+        filter: drop-shadow(0 0 14px rgba(0, 159, 227, 0.6));
+      }
+
+      /* ============ NAV BAR ============ */
+      .nav-bar {
+        position: fixed;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        z-index: 100;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 18px 56px;
+        background: linear-gradient(
+          to top,
+          rgba(10, 22, 40, 0.95),
+          transparent
+        );
+        backdrop-filter: blur(10px);
+      }
+      .nav-label {
+        font-size: 11px;
+        color: rgba(255, 255, 255, 0.4);
+        letter-spacing: 1px;
+      }
+      .nav-dots {
+        display: flex;
+        gap: 8px;
+        align-items: center;
+      }
+      .dot {
+        height: 4px;
+        border-radius: 2px;
+        background: rgba(255, 255, 255, 0.2);
+        transition: all 0.4s cubic-bezier(0.77, 0, 0.175, 1);
+        cursor: pointer;
+        width: 20px;
+      }
+      .dot.active {
+        width: 40px;
+        background: linear-gradient(
+          to right,
+          var(--stcv-green),
+          var(--jci-sky)
+        );
+      }
+      .dot:hover:not(.active) {
+        background: rgba(255, 255, 255, 0.4);
+      }
+      .nav-btns {
+        display: flex;
+        gap: 10px;
+      }
+      .nav-btn {
+        width: 44px;
+        height: 44px;
+        border-radius: 50%;
+        background: rgba(255, 255, 255, 0.05);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        color: white;
+        font-size: 18px;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: all 0.3s;
+        user-select: none;
+      }
+      .nav-btn:hover {
+        background: rgba(91, 189, 45, 0.2);
+        border-color: var(--stcv-green);
+        transform: scale(1.1);
+      }
+      .nav-btn:active {
+        transform: scale(0.95);
+      }
+      .nav-btn:disabled {
+        opacity: 0.3;
+        pointer-events: none;
+      }
+
+      /* ============ ANIM ENTRY ============ */
+      .slide.active .card,
+      .slide.active .step-item,
+      .slide.active .cal-item,
+      .slide.active .odd-pill,
+      .slide.active .cta-step,
+      .slide.active .benefit-item,
+      .slide.active .stat-box {
+        animation: card-in 0.5s ease both;
+      }
+      .slide.active .card:nth-child(1),
+      .slide.active .step-item:nth-child(1),
+      .slide.active .cal-item:nth-child(1),
+      .slide.active .odd-pill:nth-child(1),
+      .slide.active .cta-step:nth-child(1),
+      .slide.active .benefit-item:nth-child(1),
+      .slide.active .stat-box:nth-child(1) {
+        animation-delay: 0.1s;
+      }
+      .slide.active .card:nth-child(2),
+      .slide.active .step-item:nth-child(2),
+      .slide.active .cal-item:nth-child(2),
+      .slide.active .odd-pill:nth-child(2),
+      .slide.active .cta-step:nth-child(2),
+      .slide.active .benefit-item:nth-child(2),
+      .slide.active .stat-box:nth-child(2) {
+        animation-delay: 0.2s;
+      }
+      .slide.active .card:nth-child(3),
+      .slide.active .step-item:nth-child(3),
+      .slide.active .cal-item:nth-child(3),
+      .slide.active .odd-pill:nth-child(3),
+      .slide.active .cta-step:nth-child(3),
+      .slide.active .benefit-item:nth-child(3),
+      .slide.active .stat-box:nth-child(3) {
+        animation-delay: 0.3s;
+      }
+      .slide.active .card:nth-child(4),
+      .slide.active .step-item:nth-child(4),
+      .slide.active .odd-pill:nth-child(4),
+      .slide.active .benefit-item:nth-child(4),
+      .slide.active .stat-box:nth-child(4) {
+        animation-delay: 0.4s;
+      }
+      .slide.active .card:nth-child(5),
+      .slide.active .benefit-item:nth-child(5) {
+        animation-delay: 0.5s;
+      }
+      .slide.active .card:nth-child(6),
+      .slide.active .benefit-item:nth-child(6) {
+        animation-delay: 0.6s;
+      }
+      @keyframes card-in {
+        from {
+          opacity: 0;
+          transform: translateY(20px) scale(0.97);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0) scale(1);
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="bg-mesh"></div>
+    <div class="hex-bg"></div>
+    <div class="rings">
+      <div class="ring"></div>
+      <div class="ring"></div>
+      <div class="ring"></div>
+      <div class="ring"></div>
+    </div>
+    <div class="particles" id="particles"></div>
+    <div class="progress-bar" id="progressBar"></div>
+
+    <div class="top-bar">
+      <span class="top-project-name">MIARO 2026</span>
+      <span class="top-slide-info" id="slideCounter">01 / 08</span>
+      <img
+        src="Antananarivo_blanc.png"
+        alt="JCI Antananarivo"
+        class="top-logo"
+      />
+    </div>
+
+    <div class="slideshow" id="slideshow">
+      <!-- SLIDE 1 — COVER -->
+      <div class="slide slide-cover active" data-slide="0">
+        <div class="cover-badge">
+          <span></span>Demande de Partenariat — Partenaire Formateur Principal
+        </div>
+        <div class="cover-logos">
+          <img
+            src="Antananarivo_blanc.png"
+            alt="JCI Antananarivo"
+            class="logo-jci"
+          />
+          <div class="logo-divider"><span></span><em>×</em><span></span></div>
+          <div class="logo-stcv">
+            <img src="STCV_logo.png" alt="STCV" />
+          </div>
+        </div>
+        <div class="cover-title">MIARO 2026</div>
+        <div class="cover-subtitle">JCI Antananarivo × STCV — Recycle Now</div>
+        <div class="cover-pill">
+          ♻️ Partenaire Formateur Principal — Recyclage
+        </div>
+      </div>
+
+      <!-- SLIDE 2 — QUI SOMMES-NOUS -->
+      <div class="slide" data-slide="1">
+        <div class="slide-header">
+          <div class="slide-num">02</div>
+          <div class="slide-title-wrap">
+            <div class="slide-tag">Présentation</div>
+            <h2 class="slide-title">La <em>JCI Antananarivo</em></h2>
+            <div class="slide-divider"></div>
+          </div>
+        </div>
+        <div class="cards-grid cols-2">
+          <div class="card card-blue" style="grid-row: span 2">
+            <div class="card-icon">🏛️</div>
+            <h3 style="color: var(--jci-sky)">Jeune Chambre Internationale</h3>
+            <p
+              style="
+                font-size: 15px;
+                color: rgba(255, 255, 255, 0.85);
+                line-height: 1.8;
+                margin-bottom: 16px;
+              "
+            >
+              La <strong>JCI Antananarivo</strong> rassemble des jeunes leaders
+              de <strong>18 à 40 ans</strong> pour le développement du
+              leadership, de l'entrepreneuriat et de l'engagement citoyen à
+              Madagascar.
+            </p>
+            <p
+              style="
+                font-size: 13px;
+                color: rgba(255, 255, 255, 0.6);
+                line-height: 1.7;
+              "
+            >
+              Notre mission : former et inspirer des jeunes leaders créateurs de
+              changements positifs et durables dans la société malgache.
+            </p>
+          </div>
+          <div class="card">
+            <div class="card-icon">🎯</div>
+            <h3>Notre Mission</h3>
+            <ul>
+              <li>Leadership & entrepreneuriat jeune</li>
+              <li>Projets à impact positif durable</li>
+              <li>Engagement citoyen actif</li>
+              <li>Développement durable</li>
+            </ul>
+          </div>
+          <div class="card card-gold">
+            <div class="card-icon">🤝</div>
+            <h3>Pourquoi STCV ?</h3>
+            <ul>
+              <li>Expert reconnu du recyclage à Mada</li>
+              <li>Expertise technique & pédagogique</li>
+              <li>Valeurs RSE partagées</li>
+              <li>Impact terrain concret</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <!-- SLIDE 3 — STCV PRÉSENTATION -->
+      <div class="slide" data-slide="2">
+        <div class="slide-header">
+          <div class="slide-num">03</div>
+          <div class="slide-title-wrap">
+            <div class="slide-tag">Partenaire</div>
+            <h2 class="slide-title"><em>STCV</em> — Expert du recyclage</h2>
+            <div class="slide-divider"></div>
+          </div>
+        </div>
+        <div class="cards-grid cols-3">
+          <div class="card card-green">
+            <div class="card-icon">♻️</div>
+            <h3>Valorisation déchets</h3>
+            <p>
+              Spécialisé dans le tri, compactage et valorisation des déchets
+              recyclables à Antananarivo.
+            </p>
+          </div>
+          <div class="card card-green">
+            <div class="card-icon">🏭</div>
+            <h3>Solutions industrielles</h3>
+            <p>
+              Gestion des déchets industriels, alternatives écologiques, produit
+              ECOCITY et vente de machines.
+            </p>
+          </div>
+          <div class="card card-green">
+            <div class="card-icon">🌿</div>
+            <h3>Programme RSE</h3>
+            <p>
+              Accompagne les entreprises dans des actions RSE concrètes —
+              broyage de papiers confidentiels inclus.
+            </p>
+          </div>
+        </div>
+        <div
+          style="
+            margin-top: 20px;
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr 1fr;
+            gap: 14px;
+            width: 100%;
+          "
+        >
+          <div class="stat-box">
+            <div class="val">2,7K</div>
+            <div class="lbl">Followers Facebook</div>
+          </div>
+          <div class="stat-box">
+            <div class="val">RSE</div>
+            <div class="lbl">Engagement certifié</div>
+          </div>
+          <div class="stat-box">
+            <div class="val">♻️</div>
+            <div class="lbl">Recycle Now by STCV</div>
+          </div>
+          <div class="stat-box">
+            <div class="val">Tana</div>
+            <div class="lbl">Andrefan'Ambohijanahary</div>
+          </div>
+        </div>
+        <div
+          style="
+            margin-top: 16px;
+            padding: 14px 22px;
+            background: rgba(91, 189, 45, 0.08);
+            border: 1px solid rgba(91, 189, 45, 0.2);
+            border-radius: 12px;
+            font-size: 13px;
+            color: rgba(255, 255, 255, 0.8);
+            width: 100%;
+          "
+        >
+          📱
+          <strong style="color: var(--stcv-green)">@stcv_madagascar</strong> ·
+          032 05 611 61 ·
+          <em
+            >"Collecte de déchets en un clic — Collecte simple et planifiée via
+            plateforme numérique"</em
+          >
+        </div>
+      </div>
+
+      <!-- SLIDE 4 — PROJET MIARO -->
+      <div class="slide" data-slide="3">
+        <div class="slide-header">
+          <div class="slide-num">04</div>
+          <div class="slide-title-wrap">
+            <div class="slide-tag">Projet communautaire</div>
+            <h2 class="slide-title">Projet <em>MIARO 2026</em></h2>
+            <div class="slide-divider"></div>
+          </div>
+        </div>
+        <div class="steps-flow">
+          <div class="step-item">
+            <div class="step-inner">
+              <div class="step-num">1</div>
+              <div class="step-label">Sensibiliser</div>
+              <div class="step-desc">
+                Campagnes éducatives, 20 jeunes/session
+              </div>
+              <div class="step-time">2 mois</div>
+            </div>
+          </div>
+          <div class="step-item">
+            <div class="step-inner">
+              <div class="step-num">2</div>
+              <div class="step-label">Former</div>
+              <div class="step-desc">
+                Tri & anti-gaspillage, bacs de collecte
+              </div>
+              <div class="step-time">1 mois</div>
+            </div>
+          </div>
+          <div class="step-item">
+            <div class="step-inner highlight">
+              <div class="step-num">3</div>
+              <div class="step-label" style="color: var(--stcv-green)">
+                ♻️ Créer
+              </div>
+              <div class="step-desc">
+                Ateliers recyclage plastique —
+                <strong style="color: var(--stcv-green)">STCV</strong>
+              </div>
+              <div class="step-time">2 mois</div>
+            </div>
+          </div>
+          <div class="step-item">
+            <div class="step-inner">
+              <div class="step-num">4</div>
+              <div class="step-label">Concourir</div>
+              <div class="step-desc">
+                Compétition art plastique, prix aux gagnants
+              </div>
+              <div class="step-time">1 mois</div>
+            </div>
+          </div>
+          <div class="step-item">
+            <div class="step-inner">
+              <div class="step-num">5</div>
+              <div class="step-label">Valoriser</div>
+              <div class="step-desc">
+                Expo & vente, salon vert, génération revenus
+              </div>
+              <div class="step-time">1 mois</div>
+            </div>
+          </div>
+        </div>
+        <div style="margin-top: 20px; display: flex; gap: 14px; width: 100%">
+          <div
+            style="
+              flex: 1;
+              padding: 14px 20px;
+              background: rgba(91, 189, 45, 0.1);
+              border: 1px solid rgba(91, 189, 45, 0.25);
+              border-radius: 12px;
+              font-size: 13px;
+              color: rgba(255, 255, 255, 0.85);
+            "
+          >
+            ♻️
+            <strong style="color: var(--stcv-green)"
+              >STCV intervient à l'étape 3</strong
+            >
+            — cœur du projet — avec 2 ateliers pratiques de recyclage des
+            plastiques et papier/carton.
+          </div>
+          <div
+            style="
+              flex: 1;
+              padding: 14px 20px;
+              background: rgba(0, 63, 135, 0.25);
+              border: 1px solid rgba(0, 159, 227, 0.15);
+              border-radius: 12px;
+              font-size: 13px;
+              color: rgba(255, 255, 255, 0.85);
+            "
+          >
+            👥 <strong style="color: var(--jci-sky)">Cibles :</strong> Grand
+            public · ~30 jeunes par atelier · Format pratique 2h · Avril 2026 ·
+            Antananarivo
+          </div>
+        </div>
+      </div>
+
+      <!-- SLIDE 5 — VOTRE RÔLE -->
+      <div class="slide" data-slide="4">
+        <div class="slide-header">
+          <div class="slide-num">05</div>
+          <div class="slide-title-wrap">
+            <div class="slide-tag">Votre rôle</div>
+            <h2 class="slide-title">
+              STCV — <em>Partenaire Formateur Principal</em>
+            </h2>
+            <div class="slide-divider"></div>
+          </div>
+        </div>
+        <div class="cards-grid cols-2">
+          <div style="display: flex; flex-direction: column; gap: 14px">
+            <div class="card card-green">
+              <div class="card-icon">🏭</div>
+              <h3>Atelier 1 — Recyclage Plastiques</h3>
+              <p
+                style="
+                  margin-bottom: 10px;
+                  font-size: 14px;
+                  color: rgba(255, 255, 255, 0.85);
+                "
+              >
+                Date : <strong>25 avril 2026</strong> · 2h · 30 jeunes
+              </p>
+              <ul>
+                <li>Techniques de recyclage des plastiques</li>
+                <li>Démonstration pratique de transformation</li>
+                <li>Création d'objets utiles à partir de plastiques</li>
+                <li>Enjeux du plastique à Madagascar</li>
+              </ul>
+            </div>
+            <div style="display: flex; gap: 10px">
+              <div
+                style="
+                  flex: 1;
+                  padding: 14px;
+                  background: rgba(91, 189, 45, 0.08);
+                  border: 1px solid rgba(91, 189, 45, 0.2);
+                  border-radius: 12px;
+                  text-align: center;
+                "
+              >
+                <div
+                  style="
+                    font-size: 26px;
+                    font-weight: 900;
+                    color: var(--stcv-green);
+                  "
+                >
+                  2
+                </div>
+                <div
+                  style="
+                    font-size: 11px;
+                    color: rgba(255, 255, 255, 0.5);
+                    margin-top: 3px;
+                  "
+                >
+                  Ateliers
+                </div>
+              </div>
+              <div
+                style="
+                  flex: 1;
+                  padding: 14px;
+                  background: rgba(0, 159, 227, 0.08);
+                  border: 1px solid rgba(0, 159, 227, 0.2);
+                  border-radius: 12px;
+                  text-align: center;
+                "
+              >
+                <div
+                  style="
+                    font-size: 26px;
+                    font-weight: 900;
+                    color: var(--jci-sky);
+                  "
+                >
+                  40+
+                </div>
+                <div
+                  style="
+                    font-size: 11px;
+                    color: rgba(255, 255, 255, 0.5);
+                    margin-top: 3px;
+                  "
+                >
+                  Jeunes formés
+                </div>
+              </div>
+              <div
+                style="
+                  flex: 1;
+                  padding: 14px;
+                  background: rgba(245, 166, 35, 0.08);
+                  border: 1px solid rgba(245, 166, 35, 0.2);
+                  border-radius: 12px;
+                  text-align: center;
+                "
+              >
+                <div
+                  style="
+                    font-size: 26px;
+                    font-weight: 900;
+                    color: var(--jci-gold);
+                  "
+                >
+                  4h
+                </div>
+                <div
+                  style="
+                    font-size: 11px;
+                    color: rgba(255, 255, 255, 0.5);
+                    margin-top: 3px;
+                  "
+                >
+                  D'impact
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="card card-blue" style="justify-content: flex-start">
+            <div
+              class="card-icon"
+              style="
+                background: linear-gradient(
+                  135deg,
+                  rgba(0, 63, 135, 0.5),
+                  rgba(0, 159, 227, 0.2)
+                );
+              "
+            >
+              📋
+            </div>
+            <h3 style="color: var(--jci-sky)">
+              Programme détaillé des ateliers
+            </h3>
+            <ul style="margin-top: 8px">
+              <li>Former 30 jeunes aux techniques de recyclage</li>
+              <li>Démonstration pratique · machines STCV</li>
+              <li>Création d'objets utiles recyclés</li>
+              <li>Sensibilisation aux enjeux plastique Madagascar</li>
+              <li>Connexion avec les ODD Nations Unies</li>
+              <li>Valorisation de l'expertise STCV en direct</li>
+            </ul>
+            <div
+              style="
+                margin-top: 16px;
+                padding: 12px 16px;
+                background: rgba(91, 189, 45, 0.1);
+                border-left: 3px solid var(--stcv-green);
+                border-radius: 6px;
+                font-size: 12px;
+                color: rgba(255, 255, 255, 0.75);
+              "
+            >
+              En tant que <strong>Partenaire Formateur Principal</strong>, STCV
+              bénéficie d'une visibilité double et d'une reconnaissance comme
+              expert de référence en recyclage à Madagascar.
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- SLIDE 6 — BÉNÉFICES -->
+      <div class="slide" data-slide="5">
+        <div class="slide-header">
+          <div class="slide-num">06</div>
+          <div class="slide-title-wrap">
+            <div class="slide-tag">Ce que vous gagnez</div>
+            <h2 class="slide-title">Les <em>bénéfices</em> pour STCV</h2>
+            <div class="slide-divider"></div>
+          </div>
+        </div>
+        <div class="benefit-row">
+          <div class="benefit-col">
+            <div
+              style="
+                font-size: 11px;
+                letter-spacing: 3px;
+                text-transform: uppercase;
+                color: var(--stcv-green);
+                font-weight: 700;
+                margin-bottom: 4px;
+                padding: 0 4px;
+              "
+            >
+              📢 Visibilité renforcée
+            </div>
+            <div class="benefit-item">
+              <div class="benefit-icon">🏆</div>
+              <div class="benefit-text">
+                <strong>Partenaire Principal</strong
+                ><span>2 ateliers = visibilité double sur tous supports</span>
+              </div>
+            </div>
+            <div class="benefit-item">
+              <div class="benefit-icon">🖼️</div>
+              <div class="benefit-text">
+                <strong>Logo sur tous les supports</strong
+                ><span>Communication, réseaux sociaux, affiches</span>
+              </div>
+            </div>
+            <div class="benefit-item">
+              <div class="benefit-icon">📱</div>
+              <div class="benefit-text">
+                <strong>Publications dédiées</strong
+                ><span>Stories & posts valorisant l'expertise STCV</span>
+              </div>
+            </div>
+            <div class="benefit-item">
+              <div class="benefit-icon">📰</div>
+              <div class="benefit-text">
+                <strong>Couverture médiatique</strong
+                ><span>Communiqués de presse & relais JCI</span>
+              </div>
+            </div>
+          </div>
+          <div class="benefit-col">
+            <div
+              style="
+                font-size: 11px;
+                letter-spacing: 3px;
+                text-transform: uppercase;
+                color: var(--jci-sky);
+                font-weight: 700;
+                margin-bottom: 4px;
+                padding: 0 4px;
+              "
+            >
+              🎯 Impact & expertise
+            </div>
+            <div class="benefit-item">
+              <div class="benefit-icon">⭐</div>
+              <div class="benefit-text">
+                <strong>Expert de référence</strong
+                ><span>Reconnaissance nationale en recyclage</span>
+              </div>
+            </div>
+            <div class="benefit-item">
+              <div class="benefit-icon">👥</div>
+              <div class="benefit-text">
+                <strong>40 jeunes formés</strong
+                ><span>Impact direct mesurable et documenté</span>
+              </div>
+            </div>
+            <div class="benefit-item">
+              <div class="benefit-icon">🌿</div>
+              <div class="benefit-text">
+                <strong>Image RSE renforcée</strong
+                ><span>Engagement concret pour l'environnement</span>
+              </div>
+            </div>
+            <div class="benefit-item">
+              <div class="benefit-icon">🤝</div>
+              <div class="benefit-text">
+                <strong>Réseau JCI Madagascar</strong
+                ><span>Connexions professionnelles élargies</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- SLIDE 7 — CALENDRIER -->
+      <div class="slide" data-slide="6">
+        <div class="slide-header">
+          <div class="slide-num">07</div>
+          <div class="slide-title-wrap">
+            <div class="slide-tag">Planning</div>
+            <h2 class="slide-title">Calendrier des <em>interventions</em></h2>
+            <div class="slide-divider"></div>
+          </div>
+        </div>
+        <div
+          style="display: flex; flex-direction: column; gap: 14px; width: 100%"
+        >
+          <div class="cal-item">
+            <div
+              class="cal-date"
+              style="
+                background: linear-gradient(135deg, #1a5c1a, var(--jci-teal));
+              "
+            >
+              <div class="day">18</div>
+              <div class="month">Avr 2026</div>
+            </div>
+            <div class="cal-info">
+              <strong>🌱 Formation Compostage</strong>
+              <span
+                >2h · 30 jeunes · Techniques compostage déchets organiques</span
+              >
+            </div>
+            <div class="cal-badge onu">ONU-AEDM Ankatso</div>
+          </div>
+          <div class="cal-item featured">
+            <div class="cal-date">
+              <div class="day">25</div>
+              <div class="month">Avr 2026</div>
+            </div>
+            <div class="cal-info">
+              <strong>♻️ Recyclage Plastiques + Initiation déchets</strong>
+              <span
+                >2h · ~30 jeunes · Transformation plastique · Création objets
+                utiles</span
+              >
+            </div>
+            <div style="display: flex; gap: 8px; flex-shrink: 0">
+              <div class="cal-badge stcv-main">⭐ STCV Principal</div>
+              <div class="cal-badge maeva">MAEVA</div>
+            </div>
+          </div>
+        </div>
+        <div
+          style="
+            margin-top: 20px;
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 14px;
+            width: 100%;
+          "
+        >
+          <div class="stat-box">
+            <div class="val">2</div>
+            <div class="lbl">Ateliers au total</div>
+          </div>
+          <div class="stat-box">
+            <div class="val">4h</div>
+            <div class="lbl">Formation pratique</div>
+          </div>
+          <div class="stat-box">
+            <div class="val">60+</div>
+            <div class="lbl">Jeunes bénéficiaires</div>
+          </div>
+          <div
+            class="stat-box"
+            style="
+              border-color: rgba(91, 189, 45, 0.3);
+              background: rgba(91, 189, 45, 0.06);
+            "
+          >
+            <div class="val" style="">STCV</div>
+            <div class="lbl">Partenaire Principal</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- SLIDE 8 — CTA -->
+      <div class="slide" data-slide="7">
+        <div class="cta-center">
+          <div
+            class="cover-badge"
+            style="
+              border-color: rgba(91, 189, 45, 0.4);
+              color: var(--stcv-green);
+              background: rgba(91, 189, 45, 0.06);
+            "
+          >
+            <span></span>Ensemble, formons la prochaine génération
+          </div>
+          <div class="cta-big">Rejoignez<br />MIARO 2026</div>
+          <div class="cta-steps">
+            <div class="cta-step">
+              <div class="cta-step-num">1</div>
+              <div class="cta-step-text">
+                <strong>Confirmation</strong>Disponibilité 25 avril & 9 mai 2026
+              </div>
+            </div>
+            <div class="cta-step">
+              <div class="cta-step-num">2</div>
+              <div class="cta-step-text">
+                <strong>Préparation</strong>Coordination contenu & matériel
+                ateliers
+              </div>
+            </div>
+            <div class="cta-step">
+              <div class="cta-step-num">3</div>
+              <div class="cta-step-text">
+                <strong>Signature</strong>Convention de partenariat officielle
+              </div>
+            </div>
+          </div>
+          <div class="contact-box">
+            <div style="font-size: 28px">📞</div>
+            <div>
+              <strong>JCI Antananarivo — Responsable Partenariat</strong><br />
+              <span>Ericka · </span
+              ><a href="tel:+261349552629">+261 34 95 526 29</a>
+              <span style="margin: 0 10px; color: rgba(255, 255, 255, 0.3)"
+                >·</span
+              >
+              <a href="https://jcimada.org" target="_blank">jcimada.org</a>
+            </div>
+          </div>
+          <div
+            style="
+              font-size: 16px;
+              font-weight: 800;
+              letter-spacing: 3px;
+              color: var(--stcv-green);
+              text-transform: uppercase;
+            "
+          >
+            ♻️ Recycle Now — Together
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- NAVIGATION -->
+    <div class="nav-bar">
+      <span class="nav-label">JCI Antananarivo × STCV</span>
+      <div class="nav-dots" id="navDots"></div>
+      <div class="nav-btns">
+        <button class="nav-btn" id="prevBtn" onclick="changeSlide(-1)">
+          ‹
+        </button>
+        <button class="nav-btn" id="nextBtn" onclick="changeSlide(1)">›</button>
+      </div>
+    </div>
+
+    <script>
+      // Particles
+      const pContainer = document.getElementById("particles");
+      for (let i = 0; i < 30; i++) {
+        const p = document.createElement("div");
+        p.className = "particle";
+        const size = Math.random() * 4 + 1;
+        p.style.cssText = `left:${Math.random() * 100}%;width:${size}px;height:${size}px;animation-delay:${Math.random() * 8}s;animation-duration:${6 + Math.random() * 6}s;`;
+        const colors = [
+          "rgba(91,189,45,0.7)",
+          "rgba(0,159,227,0.5)",
+          "rgba(255,255,255,0.3)",
+          "rgba(139,195,74,0.5)",
+        ];
+        p.style.background = colors[Math.floor(Math.random() * colors.length)];
+        pContainer.appendChild(p);
+      }
+
+      const slides = document.querySelectorAll(".slide");
+      const total = slides.length;
+      let current = 0;
+
+      const dotsContainer = document.getElementById("navDots");
+      for (let i = 0; i < total; i++) {
+        const d = document.createElement("div");
+        d.className = "dot" + (i === 0 ? " active" : "");
+        d.onclick = () => goTo(i);
+        dotsContainer.appendChild(d);
+      }
+
+      function updateUI() {
+        dotsContainer
+          .querySelectorAll(".dot")
+          .forEach((d, i) => d.classList.toggle("active", i === current));
+        document.getElementById("prevBtn").disabled = current === 0;
+        document.getElementById("nextBtn").disabled = current === total - 1;
+        document.getElementById("slideCounter").textContent =
+          String(current + 1).padStart(2, "0") +
+          " / " +
+          String(total).padStart(2, "0");
+        document.getElementById("progressBar").style.width =
+          ((current + 1) / total) * 100 + "%";
+      }
+
+      function goTo(index) {
+        if (index < 0 || index >= total || index === current) return;
+        const prev = current;
+        current = index;
+        slides[prev].classList.remove("active");
+        slides[prev].classList.add("exit-left");
+        setTimeout(() => slides[prev].classList.remove("exit-left"), 700);
+        slides[current].classList.add("active");
+        updateUI();
+      }
+
+      function changeSlide(dir) {
+        goTo(current + dir);
+      }
+
+      document.addEventListener("keydown", (e) => {
+        if (e.key === "ArrowRight" || e.key === "ArrowDown") changeSlide(1);
+        if (e.key === "ArrowLeft" || e.key === "ArrowUp") changeSlide(-1);
+      });
+
+      let touchX = null;
+      document.addEventListener(
+        "touchstart",
+        (e) => (touchX = e.touches[0].clientX),
+      );
+      document.addEventListener("touchend", (e) => {
+        if (!touchX) return;
+        const diff = touchX - e.changedTouches[0].clientX;
+        if (Math.abs(diff) > 50) changeSlide(diff > 0 ? 1 : -1);
+        touchX = null;
+      });
+
+      updateUI();
+    </script>
+  </body>
+</html>
